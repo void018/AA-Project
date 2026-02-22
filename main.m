@@ -10,10 +10,9 @@ load_QL = 15e6;
 
 %%% initialization
 %load_P_values = [40e6, 40e3, 40, 0];
-%load_P_values = linspace(0, 40e6, 2);
-load_P_values = [80e6];
+load_P_values = logspace(0, 8, 30);
+load_Q_values = logspace(0, 8, 30);
 
-load_Q_values = [15e6];
 num_of_runs = length(load_P_values) * length(load_Q_values);
 
 T = array2table(zeros(num_of_runs, 20), 'VariableNames', ["No", "negative_sequence", "V_A", "V_B", "V_C", "I_A", "I_B", "I_C", "V_a", "V_b", "V_c", "I_a", "I_b", "I_c", "phase_B", "phase_C", "phase_a", "phase_b", "phase_c", "faulted"]);
@@ -29,9 +28,10 @@ for cur_P=load_P_values
         counter = counter + 1;
     end
 end
+
 % perform the simulation
 %outs = sim(simIns, "UseFastRestart","on");
-outs = sim(simIns);
+outs = parsim(simIns);
 
 % reset counter
 counter = 1;
@@ -74,4 +74,3 @@ fprintf("simulation time: %s\n", datetime - start_time);
 % TODO: find reasonable P and Q values
 % TODO: should we include P and Q in model training
 % TODO: should we do something with power factor?
-% potato, yes it is fu
