@@ -12,16 +12,16 @@ load_P3 = load_P * 0.3;
 
 %%% initialization
 %load_P_values = [40e6, 40e3, 40, 0];
-load_P_values = logspace(0, 5, 2);
-load_P1_values = logspace(0, 4.5, 2);
-load_P2_values = logspace(0, 4.5, 2);
-load_P3_values = logspace(0, 4.5, 2);
-
+n = 6;
+load_P_values = logspace(0, 5, n);
+load_P1_values = logspace(0, 4.5, n);
+load_P2_values = logspace(0, 4.5, n);
+load_P3_values = logspace(0, 4.5, n);
 
 %load_P_values = [9e9];
 %load_Q_values = [2e9];
 
-num_of_runs = length(load_P_values) * length(load_Q_values);
+num_of_runs = length(load_P_values) * length(load_P1_values) * length(load_P2_values) * length(load_P3_values);
 
 T = array2table(zeros(num_of_runs, 20), 'VariableNames', ["No", "negative_sequence", "V_A", "V_B", "V_C", "I_A", "I_B", "I_C", "V_a", "V_b", "V_c", "I_a", "I_b", "I_c", "phase_B", "phase_C", "phase_a", "phase_b", "phase_c", "faulted"]);
 
@@ -43,7 +43,7 @@ end
 
 % perform the simulation
 %outs = sim(simIns, "UseFastRestart","on");
-outs = sim(simIns);
+outs = parsim(simIns);
 
 % reset counter
 counter = 1;
@@ -52,23 +52,23 @@ for out=outs
     logsout = out.logsout;
 
     negative_sequence = getVarValue(logsout,"negative_sequence");
-    V_A = getVarValue(logsout,"V_A");
-    V_B = getVarValue(logsout,"V_B");
-    V_C = getVarValue(logsout,"V_C");
-    I_A = getVarValue(logsout,"I_A");
-    I_B = getVarValue(logsout,"I_B");
-    I_C = getVarValue(logsout,"I_C");
-    V_a = getVarValue(logsout,"V_a");
-    V_b = getVarValue(logsout,"V_b");
-    V_c = getVarValue(logsout,"V_c");
-    I_a = getVarValue(logsout,"I_a");
-    I_b = getVarValue(logsout,"I_b");
-    I_c = getVarValue(logsout,"I_c");
-    phase_B = getVarValue(logsout,"phase_B");
-    phase_C = getVarValue(logsout,"phase_C");
-    phase_a = getVarValue(logsout,"phase_a");
-    phase_b = getVarValue(logsout,"phase_b");
-    phase_c = getVarValue(logsout,"phase_c");
+    V_A = round(getVarValue(logsout,"V_A"));
+    V_B = round(getVarValue(logsout,"V_B"));
+    V_C = round(getVarValue(logsout,"V_C"));
+    I_A = round(getVarValue(logsout,"I_A"), 1);
+    I_B = round(getVarValue(logsout,"I_B"), 1);
+    I_C = round(getVarValue(logsout,"I_C"), 1);
+    V_a = round(getVarValue(logsout,"V_a"));
+    V_b = round(getVarValue(logsout,"V_b"));
+    V_c = round(getVarValue(logsout,"V_c"));
+    I_a = round(getVarValue(logsout,"I_a"), 1);
+    I_b = round(getVarValue(logsout,"I_b"), 1);
+    I_c = round(getVarValue(logsout,"I_c"), 1);
+    phase_B = round(getVarValue(logsout,"phase_B"), 2);
+    phase_C = round(getVarValue(logsout,"phase_C"), 2);
+    phase_a = round(getVarValue(logsout,"phase_a"), 2);
+    phase_b = round(getVarValue(logsout,"phase_b"), 2);
+    phase_c = round(getVarValue(logsout,"phase_c"), 2);
 
     % add data for both: healthy run & faulted run
     for j=[1, 2]
