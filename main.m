@@ -6,12 +6,20 @@ defaults = [
 ];
 start_time = datetime;
 load_P = 40e6;
-load_QL = 15e6;
+load_P1 = load_P * 0.3;
+load_P2 = load_P * 0.3;
+load_P3 = load_P * 0.3;
 
 %%% initialization
 %load_P_values = [40e6, 40e3, 40, 0];
-load_P_values = logspace(0, 8, 30);
-load_Q_values = logspace(0, 8, 30);
+load_P_values = logspace(0, 5, 2);
+load_P1_values = logspace(0, 4.5, 2);
+load_P2_values = logspace(0, 4.5, 2);
+load_P3_values = logspace(0, 4.5, 2);
+
+
+%load_P_values = [9e9];
+%load_Q_values = [2e9];
 
 num_of_runs = length(load_P_values) * length(load_Q_values);
 
@@ -19,19 +27,23 @@ T = array2table(zeros(num_of_runs, 20), 'VariableNames', ["No", "negative_sequen
 
 
 simIn = Simulink.SimulationInput("open_phase_model");
+clear simIns;
 counter = 1;
 for cur_P=load_P_values
-    for cur_Q=load_Q_values
-        simIn = setSimInputs(simIn, cur_P, cur_Q);
-
-        simIns(counter) = simIn;
-        counter = counter + 1;
+    for cur_P1=load_P1_values
+        for cur_P2=load_P2_values
+            for cur_P3=load_P3_values
+                simIn = setSimInputs(simIn, cur_P, cur_P1, cur_P2, cur_P3);
+                simIns(counter) = simIn;
+                counter = counter + 1;
+            end
+        end
     end
 end
 
 % perform the simulation
 %outs = sim(simIns, "UseFastRestart","on");
-outs = parsim(simIns);
+outs = sim(simIns);
 
 % reset counter
 counter = 1;
@@ -69,8 +81,3 @@ end
 disp(T)
 fprintf("simulation time: %s\n", datetime - start_time);
 %out.logsout{1}.Values.Data 
-
-% TODO: does transformer explode in Simulink?
-% TODO: find reasonable P and Q values
-% TODO: should we include P and Q in model training
-% TODO: should we do something with power factor?
