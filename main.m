@@ -74,4 +74,4 @@ fprintf("simulation time: %s\n", datetime - start_time);
 % TODO: find reasonable P and Q values
 % TODO: should we include P and Q in model training
 % TODO: should we do something with power factor?
-% potato, yes it is
+% potato, yes it is fu
