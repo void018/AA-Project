@@ -14,8 +14,11 @@ df = df.drop(columns=['No'], errors='ignore')
 
 # 2. Define Features and Target
 # Using exactly the 12 columns you specified
-features = ['V_A', 'V_B', 'V_C', 'I_A', 'I_B', 'I_C', 
-            'V_a', 'V_b', 'V_c', 'I_a', 'I_b', 'I_c']
+# features = ['V_A', 'V_B', 'V_C', 'I_A', 'I_B', 'I_C', 
+#             'V_a', 'V_b', 'V_c', 'I_a', 'I_b', 'I_c']
+
+# features = ['V_a', 'V_b', 'V_c']
+features = ['V_A', 'V_B', 'V_C']
 target = 'faulted'
 
 X = df[features].values
@@ -44,7 +47,7 @@ class FaultDetector(nn.Module):
     def __init__(self):
         super(FaultDetector, self).__init__()
         self.net = nn.Sequential(
-            nn.Linear(12, 32),
+            nn.Linear(3, 32),
             nn.ReLU(),
             nn.Linear(32, 16),
             nn.ReLU(),
