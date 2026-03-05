@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 # 1. Load Data
-df = pd.read_csv('data.csv')
+df = pd.read_csv('../main_data.csv')
 
 # Explicitly drop the 'No' column to prevent data leakage
 df = df.drop(columns=['No'], errors='ignore')
@@ -17,8 +17,9 @@ df = df.drop(columns=['No'], errors='ignore')
 # features = ['V_A', 'V_B', 'V_C', 'I_A', 'I_B', 'I_C', 
 #             'V_a', 'V_b', 'V_c', 'I_a', 'I_b', 'I_c']
 
-# features = ['V_a', 'V_b', 'V_c']
-features = ['V_A', 'V_B', 'V_C']
+# features = ['V_A', 'V_B', 'V_C']
+features = ['V_a', 'V_b', 'V_c']
+
 target = 'faulted'
 
 X = df[features].values
@@ -47,8 +48,10 @@ class FaultDetector(nn.Module):
     def __init__(self):
         super(FaultDetector, self).__init__()
         self.net = nn.Sequential(
-            nn.Linear(3, 32),
+            nn.Linear(len(features), 32),
             nn.ReLU(),
+            # nn.Linear(32, 32),
+            # nn.ReLU(),
             nn.Linear(32, 16),
             nn.ReLU(),
             nn.Linear(16, 1),
@@ -86,4 +89,4 @@ with torch.no_grad():
     y_pred_prob = model(X_test_t)
     y_pred = (y_pred_prob > 0.5).float()
     accuracy = (y_pred == y_test_t).float().mean()
-    print(f"\nAccuracy after dropping 'No': {accuracy.item() * 100:.2f}%")
+    print(f"\nAccuracy: {accuracy.item() * 100:.2f}%")
