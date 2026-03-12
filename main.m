@@ -15,10 +15,10 @@ load_P3 = load_P * 0.3;
 %load_P_values = [40e6, 40e3, 40, 0];
 addpath("Functions")
 n = 5;
-load_P_values = 40 * logspace(3, 6, 20);
-load_P1_values = 13.4 * logspace(3, 6, n);
-load_P2_values = 13.4 * logspace(3, 6, n);
-load_P3_values = 13.4 * logspace(3, 6, n);
+load_P_values = 40 * logspace(0, 3, 20);
+load_P1_values = 13.4 * logspace(0, 3, n);
+load_P2_values = 13.4 * logspace(0, 3, n);
+load_P3_values = 13.4 * logspace(0, 3, n);
 
 %load_P_values = [9e9];
 %load_Q_values = [2e9];
@@ -36,7 +36,7 @@ for cur_P=load_P_values
         for cur_P2=load_P2_values
             for cur_P3=load_P3_values
                 for r=[1 1]
-                    simIn = setSimInputs(simIn, cur_P+cur_P*rand*r, cur_P1+cur_P1*rand*r, cur_P2+cur_P2*rand*r, cur_P3+cur_P3*rand*r);
+                    simIn = setSimInputs(simIn, cur_P+cur_P*(rand*0.5+0.5), cur_P1+cur_P1*(rand*0.5+0.5), cur_P2+cur_P2*(rand*0.5+0.5), cur_P3+cur_P3*(rand*0.5+0.5));
                     simIns(counter) = simIn;
                     counter = counter + 1;
                 end
