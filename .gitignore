@@ -36,3 +36,4 @@ octave-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/matlab
 
+__pycache__/
