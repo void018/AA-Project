@@ -219,6 +219,7 @@ def evaluate_on_test(
     y_test: torch.Tensor,
     device: torch.device,
     logger: logging.Logger,
+    test_bins: "np.ndarray | None" = None,
 ) -> None:
     """Evaluate *model* on the held-out test set and log every result line.
 
@@ -233,6 +234,10 @@ def evaluate_on_test(
     y_test : Test-label tensor, shape ``(n,)``.
     device : CPU or CUDA device.
     logger : Run-specific logger (writes to console AND run_log.txt).
+    test_bins : Per-row load bin for the test split. When supplied, accuracy is
+        additionally reported per loading level, because averaging over a 1000x
+        load sweep hides the light-load regime where detection is hardest and
+        where classical methods are known to struggle.
     """
     model.eval()
     with torch.no_grad():
@@ -253,6 +258,19 @@ def evaluate_on_test(
         f"  True Faulted       {cm[1, 0]:<12d}{cm[1, 1]}",
     ]
     cm_str = "\n".join(cm_lines)
+
+    if test_bins is not None:
+        logger.info("Accuracy by load bin (0 = lightest):")
+        for b in sorted(set(int(v) for v in test_bins)):
+            sel = test_bins == b
+            if not sel.any():
+                continue
+            acc_b = float((preds.ravel()[sel] == y_true[sel]).mean())
+            pos = y_true[sel] == 1
+            rec_b = (float(preds.ravel()[sel][pos].mean())
+                     if pos.any() else float("nan"))
+            logger.info("  Load bin %d | n=%4d | acc %.4f | faulted recall %.4f",
+                        b, int(sel.sum()), acc_b, rec_b)
 
     logger.info("")
     logger.info("─" * 55)

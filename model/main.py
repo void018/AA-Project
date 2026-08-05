@@ -96,6 +96,8 @@ def run_experiment(
     labels: np.ndarray,
     device: torch.device,
     seed: int = 0,
+    groups: "np.ndarray | None" = None,
+    bins: "np.ndarray | None" = None,
 ) -> None:
     """Execute one full training run for a single experiment definition.
 
@@ -149,11 +151,13 @@ def run_experiment(
 
     # ── 3. Data preparation ───────────────────────────────────────────────────
     logger.info("Preparing data …")
-    train_loader, val_loader, X_test, y_test, _ = dp.prepare_dataloaders(
+    train_loader, val_loader, X_test, y_test, _, test_bins = dp.prepare_dataloaders(
         features_df=features_df,
         labels=labels,
         selected_features=selected_features,
         run_dir=run_dir,
+        groups=groups,
+        bins=bins,
     )
     n_train = len(train_loader.dataset)
     n_val = len(val_loader.dataset)
@@ -174,7 +178,7 @@ def run_experiment(
         model, train_loader, val_loader, device, run_dir, logger)
 
     # ── 5. Test-set evaluation ────────────────────────────────────────────────
-    tr.evaluate_on_test(model, X_test, y_test, device, logger)
+    tr.evaluate_on_test(model, X_test, y_test, device, logger, test_bins)
 
     # ── 6. Plots & timing ────────────────────────────────────────────────────
     utils.plot_training_curves(history, run_dir)
@@ -211,14 +215,59 @@ if __name__ == "__main__":
     _log.info("Loading data from '%s' …", config.INPUT_FILE)
     raw_df = dp.load_raw_data(config.INPUT_FILE)
 
+    # Grouping and load bins are computed on the CLEAN measurements, before the
+    # instrument model runs, so that neither is corrupted by measurement noise.
+    groups = ((raw_df["No"].values + 1) // 2)
+    bins = dp.load_bins(dp.load_level(raw_df))
+    _log.info("Split groups: %d simulation runs | load bins: %d",
+              len(np.unique(groups)), config.LOAD_BINS)
+
+    # ── Instrument model ─────────────────────────────────────────────────────
+    if config.INSTRUMENT_MODEL and config.CT_ACCURACY_CLASS > 0:
+        i_pre, i_post = dp.rated_currents()
+        _log.info(
+            "Applying instrument model — CT class %.3f (floor %.2f A pre / "
+            "%.1f A post), VT class %.3f",
+            config.CT_ACCURACY_CLASS, config.CT_ACCURACY_CLASS * i_pre,
+            config.CT_ACCURACY_CLASS * i_post, config.VT_ACCURACY_CLASS,
+        )
+        raw_df = dp.apply_instrument_model(raw_df)
+    else:
+        _log.warning(
+            "Instrument model DISABLED — measurements are ideal. An open phase "
+            "is then separable by the single rule 'I_A < 0.4 A', so feature-set "
+            "comparisons will not be meaningful."
+        )
+
     _log.info("Engineering features …")
     features_df = dp.engineer_features(raw_df)
     labels = raw_df["faulted"].values.astype("float32")
+
+    # Degenerate features are dropped everywhere, including from any experiment
+    # that names them explicitly.
+    if config.EXCLUDE_DEGENERATE_FEATURES:
+        for exp in config.TRAINING_RUNS:
+            dropped = [f for f in exp["features"]
+                       if f in config.DEGENERATE_FEATURES]
+            if dropped:
+                exp["features"] = [f for f in exp["features"]
+                                   if f not in config.DEGENERATE_FEATURES]
+                _log.info("Dropped degenerate feature(s) %s from '%s'",
+                          dropped, exp["name"])
 
     _log.info(
         "Dataset ready — %d samples | class balance (faulted): %.2f%%",
         len(labels), float(labels.mean()) * 100,
     )
+
+    # ── Classical relay baseline ─────────────────────────────────────────────
+    # Run first so the comparison figure exists even if training is interrupted.
+    try:
+        import classical_baseline as cb
+        _log.info("Evaluating classical negative-sequence relay baseline …")
+        cb.run_sweep()
+    except Exception as exc:  # noqa: BLE001
+        _log.warning("Classical baseline failed (%s); continuing.", exc)
 
     # ── Run all experiments, once per seed ────────────────────────────────────
     n_exp = len(config.TRAINING_RUNS)
@@ -233,6 +282,7 @@ if __name__ == "__main__":
         for seed in config.SEEDS:
             _log.info("\n[%d/%d] Starting experiment: %s (seed %d)",
                       i, n_exp, experiment["name"], seed)
-            run_experiment(experiment, features_df, labels, device, seed=seed)
+            run_experiment(experiment, features_df, labels, device, seed=seed,
+                           groups=groups, bins=bins)
 
     _log.info("\nAll experiments complete.")
