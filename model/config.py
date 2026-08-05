@@ -19,7 +19,8 @@ LOG_TRANSFORM_FEATURES: tuple[str, ...] = (
     "IA", "IB", "IC", "Ia", "Ib", "Ic",
 )
 
-VOLTAGE_CONDITIONING: str = "per_unit_deviation"   # "per_unit_deviation" | "log1p" | "none"
+# "per_unit_deviation" | "log1p" | "none"
+VOLTAGE_CONDITIONING: str = "per_unit_deviation"
 VOLTAGE_FEATURES: tuple[str, ...] = ("VA", "VB", "VC", "Va", "Vb", "Vc")
 
 # Yg primary -> phase voltage = 230 kV / sqrt(3); Delta secondary -> 13.8 kV
@@ -37,7 +38,8 @@ V_NOMINAL_POST: float = 13.8e3
 INSTRUMENT_MODEL: bool = True
 CT_ACCURACY_CLASS: float = 0.005      # 0.5% of rated current (class 0.5)
 VT_ACCURACY_CLASS: float = 0.005      # 0.5% of reading      (class 0.5)
-CT_RATIO_ERROR: float = 0.002         # proportional (gain) error on the reading
+# proportional (gain) error on the reading
+CT_RATIO_ERROR: float = 0.002
 INSTRUMENT_RNG_SEED: int = 12345      # fixed so the noise draw is reproducible
 
 S_RATED_VA: float = 100e6             # transformer nominal power (Table 3.1)
@@ -87,14 +89,15 @@ EPOCHS: int = 400
 LEARNING_RATE: float = 1e-3
 WEIGHT_DECAY: float = 1e-4
 DROPOUT: float = 0.1        # was 0.3; at 3-6 input features that dropped a
-                            # whole feature in ~30% of forward passes
+# whole feature in ~30% of forward passes
 LR_PATIENCE: int = 10       # epochs before ReduceLROnPlateau halves the LR
 LR_FACTOR: float = 0.5
 
 # Metric the LR scheduler and early stopping both watch. Validation LOSS is
 # smooth and converges early even while validation ACCURACY is still thrashing,
 # so scheduling on loss meant the LR was never reduced when it mattered.
-LR_MONITOR: str = "val_acc"          # "val_acc" (maximise) or "val_loss" (minimise)
+# "val_acc" (maximise) or "val_loss" (minimise)
+LR_MONITOR: str = "val_acc"
 EARLY_STOP_PATIENCE: int = 40        # real value; was EPOCHS, i.e. disabled
 
 # Evaluate the best-validation checkpoint rather than whatever the final epoch
@@ -180,7 +183,7 @@ TRAINING_RUNS_TMP: list[dict] = [
 
 ]
 
-TRAINING_RUNS: list[dict] = [
+iTRAINING_RUNS: list[dict] = [
     {
         "name": "post_volt_deviations_and_vuf",
         "features": ["dev_a", "dev_b", "dev_c", "vuf"],
@@ -220,7 +223,7 @@ TRAINING_RUNS: list[dict] = [
     },
 ]
 
-TRAINING_RUNS: list[dict] = [
+iTRAINING_RUNS: list[dict] = [
     {
         "name": "derivations_post",
         "features": [
