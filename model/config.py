@@ -108,7 +108,7 @@ USE_BEST_CHECKPOINT: bool = True
 # ── Repeats ───────────────────────────────────────────────────────────────────
 # Every experiment is run once per seed so that run-to-run variance can be
 # reported as mean +- std instead of being mistaken for a real effect.
-SEEDS: tuple[int, ...] = (0, 1, 2, 3, 4)
+SEEDS: tuple[int, ...] = (0, 1)
 
 
 # ── Experiment definitions ────────────────────────────────────────────────────
@@ -117,7 +117,7 @@ SEEDS: tuple[int, ...] = (0, 1, 2, 3, 4)
 #   "features" – subset of columns produced by engineer_features().
 #                See ALL_ENGINEERED_FEATURES in data_processing.py for valid names.
 
-TRAINING_RUNS_TMP: list[dict] = [
+TRAINING_RUNS: list[dict] = [
     # ── Post-transformer only ─────────────────────────────────────────────────
     {
         "name": "pre_currents_only",
