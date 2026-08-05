@@ -48,14 +48,15 @@ EPOCHS: int = 400
 LEARNING_RATE: float = 1e-3
 WEIGHT_DECAY: float = 1e-4
 DROPOUT: float = 0.1        # was 0.3; at 3-6 input features that dropped a
-                            # whole feature in ~30% of forward passes
+# whole feature in ~30% of forward passes
 LR_PATIENCE: int = 10       # epochs before ReduceLROnPlateau halves the LR
 LR_FACTOR: float = 0.5
 
 # Metric the LR scheduler and early stopping both watch. Validation LOSS is
 # smooth and converges early even while validation ACCURACY is still thrashing,
 # so scheduling on loss meant the LR was never reduced when it mattered.
-LR_MONITOR: str = "val_acc"          # "val_acc" (maximise) or "val_loss" (minimise)
+# "val_acc" (maximise) or "val_loss" (minimise)
+LR_MONITOR: str = "val_acc"
 EARLY_STOP_PATIENCE: int = 40        # real value; was EPOCHS, i.e. disabled
 
 # Evaluate the best-validation checkpoint rather than whatever the final epoch
@@ -213,3 +214,8 @@ TRAINING_RUNS += [
         ],
     },
 ]
+
+# Skip IA column
+for r in TRAINING_RUNS:
+    if "IA" in r["features"]:
+        r["features"].remove("IA")
