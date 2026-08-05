@@ -152,7 +152,7 @@ def parse_log_file(log_path: str) -> Optional[Dict[str, Any]]:
     return run_data
 
 
-def main(runs_directory: str = "runs", output_file: str = "runs_summary.json"):
+def main(runs_directory: str = "./runs_round2/", output_file: str = "runs_summary_round2.json"):
     """
     Main function to parse all subdirectories in the runs directory
     and save the aggregated results to a JSON file.

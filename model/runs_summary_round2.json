@@ -1,0 +1,766 @@
+[
+  {
+    "run_codename": "0508_104250_derivations_full",
+    "features_used": [
+      "dev_a",
+      "dev_b",
+      "dev_c",
+      "dev_A",
+      "dev_B",
+      "dev_C",
+      "phase_a",
+      "phase_b",
+      "phase_c",
+      "phase_B",
+      "phase_C",
+      "min_max_ratio",
+      "vuf",
+      "neg_seq_ratio",
+      "min_max_ratio_pre",
+      "vuf_pre",
+      "neg_seq_ratio_pre"
+    ],
+    "last_train_acc": 0.8927,
+    "last_train_loss": 0.2276,
+    "last_val_acc": 0.887,
+    "last_val_loss": 0.1991,
+    "test_results": {
+      "Healthy": {
+        "precision": 1.0,
+        "recall": 0.79,
+        "f1-score": 0.89,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 0.83,
+        "recall": 1.0,
+        "f1-score": 0.91,
+        "support": 1500
+      },
+      "accuracy": 0.9,
+      "macro_avg": {
+        "precision": 0.91,
+        "recall": 0.9,
+        "f1-score": 0.9,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 0.91,
+        "recall": 0.9,
+        "f1-score": 0.9,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1192,
+        308
+      ],
+      [
+        0,
+        1500
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_104250_derivations_full/training_curves.png"
+  },
+  {
+    "run_codename": "0508_104105_derivations_pre",
+    "features_used": [
+      "dev_A",
+      "dev_B",
+      "dev_C",
+      "phase_B",
+      "phase_C",
+      "min_max_ratio_pre",
+      "vuf_pre",
+      "neg_seq_ratio_pre"
+    ],
+    "last_train_acc": 0.7663,
+    "last_train_loss": 0.4169,
+    "last_val_acc": 0.7447,
+    "last_val_loss": 0.4118,
+    "test_results": {
+      "Healthy": {
+        "precision": 0.65,
+        "recall": 1.0,
+        "f1-score": 0.79,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 1.0,
+        "recall": 0.46,
+        "f1-score": 0.63,
+        "support": 1500
+      },
+      "accuracy": 0.73,
+      "macro_avg": {
+        "precision": 0.83,
+        "recall": 0.73,
+        "f1-score": 0.71,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 0.83,
+        "recall": 0.73,
+        "f1-score": 0.71,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1500,
+        0
+      ],
+      [
+        806,
+        694
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_104105_derivations_pre/training_curves.png"
+  },
+  {
+    "run_codename": "0508_103919_derivations_post",
+    "features_used": [
+      "dev_a",
+      "dev_b",
+      "dev_c",
+      "phase_a",
+      "phase_b",
+      "phase_c",
+      "min_max_ratio",
+      "vuf",
+      "neg_seq_ratio"
+    ],
+    "last_train_acc": 0.88,
+    "last_train_loss": 0.2451,
+    "last_val_acc": 0.882,
+    "last_val_loss": 0.2192,
+    "test_results": {
+      "Healthy": {
+        "precision": 1.0,
+        "recall": 0.78,
+        "f1-score": 0.88,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 0.82,
+        "recall": 1.0,
+        "f1-score": 0.9,
+        "support": 1500
+      },
+      "accuracy": 0.89,
+      "macro_avg": {
+        "precision": 0.91,
+        "recall": 0.89,
+        "f1-score": 0.89,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 0.91,
+        "recall": 0.89,
+        "f1-score": 0.89,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1167,
+        333
+      ],
+      [
+        0,
+        1500
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_103919_derivations_post/training_curves.png"
+  },
+  {
+    "run_codename": "0508_103735_all_currents_all_voltages",
+    "features_used": [
+      "IA",
+      "IB",
+      "IC",
+      "Ia",
+      "Ib",
+      "Ic",
+      "VA",
+      "VB",
+      "VC",
+      "Va",
+      "Vb",
+      "Vc"
+    ],
+    "last_train_acc": 0.7899,
+    "last_train_loss": 0.3771,
+    "last_val_acc": 0.909,
+    "last_val_loss": 0.335,
+    "test_results": {
+      "Healthy": {
+        "precision": 0.83,
+        "recall": 1.0,
+        "f1-score": 0.91,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1-score": 0.89,
+        "support": 1500
+      },
+      "accuracy": 0.9,
+      "macro_avg": {
+        "precision": 0.92,
+        "recall": 0.9,
+        "f1-score": 0.9,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 0.92,
+        "recall": 0.9,
+        "f1-score": 0.9,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1500,
+        0
+      ],
+      [
+        303,
+        1197
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_103735_all_currents_all_voltages/training_curves.png"
+  },
+  {
+    "run_codename": "0508_103551_post_currents_all_voltages",
+    "features_used": [
+      "Ia",
+      "Ib",
+      "Ic",
+      "VA",
+      "VB",
+      "VC",
+      "Va",
+      "Vb",
+      "Vc"
+    ],
+    "last_train_acc": 0.7971,
+    "last_train_loss": 0.3663,
+    "last_val_acc": 1.0,
+    "last_val_loss": 0.3388,
+    "test_results": {
+      "Healthy": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 1500
+      },
+      "accuracy": 1.0,
+      "macro_avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1500,
+        0
+      ],
+      [
+        0,
+        1500
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_103551_post_currents_all_voltages/training_curves.png"
+  },
+  {
+    "run_codename": "0508_103405_pre_currents_all_voltages",
+    "features_used": [
+      "IA",
+      "IB",
+      "IC",
+      "VA",
+      "VB",
+      "VC",
+      "Va",
+      "Vb",
+      "Vc"
+    ],
+    "last_train_acc": 0.7934,
+    "last_train_loss": 0.3755,
+    "last_val_acc": 1.0,
+    "last_val_loss": 0.3261,
+    "test_results": {
+      "Healthy": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 1500
+      },
+      "accuracy": 1.0,
+      "macro_avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1500,
+        0
+      ],
+      [
+        0,
+        1500
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_103405_pre_currents_all_voltages/training_curves.png"
+  },
+  {
+    "run_codename": "0508_103221_post_currents_voltages",
+    "features_used": [
+      "Ia",
+      "Ib",
+      "Ic",
+      "Va",
+      "Vb",
+      "Vc"
+    ],
+    "last_train_acc": 0.7928,
+    "last_train_loss": 0.3709,
+    "last_val_acc": 1.0,
+    "last_val_loss": 0.3457,
+    "test_results": {
+      "Healthy": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 1500
+      },
+      "accuracy": 1.0,
+      "macro_avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1500,
+        0
+      ],
+      [
+        0,
+        1500
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_103221_post_currents_voltages/training_curves.png"
+  },
+  {
+    "run_codename": "0508_103037_pre_currents_voltages",
+    "features_used": [
+      "IA",
+      "IB",
+      "IC",
+      "VA",
+      "VB",
+      "VC"
+    ],
+    "last_train_acc": 0.7987,
+    "last_train_loss": 0.3729,
+    "last_val_acc": 0.8443,
+    "last_val_loss": 0.3287,
+    "test_results": {
+      "Healthy": {
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1-score": 0.86,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 1.0,
+        "recall": 0.67,
+        "f1-score": 0.8,
+        "support": 1500
+      },
+      "accuracy": 0.84,
+      "macro_avg": {
+        "precision": 0.88,
+        "recall": 0.84,
+        "f1-score": 0.83,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 0.88,
+        "recall": 0.84,
+        "f1-score": 0.83,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1500,
+        0
+      ],
+      [
+        490,
+        1010
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_103037_pre_currents_voltages/training_curves.png"
+  },
+  {
+    "run_codename": "0508_102851_all_currents_post_voltages",
+    "features_used": [
+      "IA",
+      "IB",
+      "IC",
+      "Ia",
+      "Ib",
+      "Ic",
+      "Va",
+      "Vb",
+      "Vc"
+    ],
+    "last_train_acc": 0.7837,
+    "last_train_loss": 0.3729,
+    "last_val_acc": 1.0,
+    "last_val_loss": 0.3304,
+    "test_results": {
+      "Healthy": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 1500
+      },
+      "accuracy": 1.0,
+      "macro_avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1500,
+        0
+      ],
+      [
+        0,
+        1500
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_102851_all_currents_post_voltages/training_curves.png"
+  },
+  {
+    "run_codename": "0508_102704_all_currents_pre_voltages",
+    "features_used": [
+      "IA",
+      "IB",
+      "IC",
+      "Ia",
+      "Ib",
+      "Ic",
+      "VA",
+      "VB",
+      "VC"
+    ],
+    "last_train_acc": 0.7946,
+    "last_train_loss": 0.365,
+    "last_val_acc": 0.7647,
+    "last_val_loss": 0.3363,
+    "test_results": {
+      "Healthy": {
+        "precision": 0.67,
+        "recall": 1.0,
+        "f1-score": 0.8,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1-score": 0.67,
+        "support": 1500
+      },
+      "accuracy": 0.75,
+      "macro_avg": {
+        "precision": 0.83,
+        "recall": 0.75,
+        "f1-score": 0.73,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 0.83,
+        "recall": 0.75,
+        "f1-score": 0.73,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1500,
+        0
+      ],
+      [
+        752,
+        748
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_102704_all_currents_pre_voltages/training_curves.png"
+  },
+  {
+    "run_codename": "0508_102520_post_voltages_only",
+    "features_used": [
+      "Va",
+      "Vb",
+      "Vc"
+    ],
+    "last_train_acc": 0.6999,
+    "last_train_loss": 0.5293,
+    "last_val_acc": 0.9363,
+    "last_val_loss": 0.5042,
+    "test_results": {
+      "Healthy": {
+        "precision": 0.98,
+        "recall": 0.88,
+        "f1-score": 0.93,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 0.89,
+        "recall": 0.98,
+        "f1-score": 0.93,
+        "support": 1500
+      },
+      "accuracy": 0.93,
+      "macro_avg": {
+        "precision": 0.94,
+        "recall": 0.93,
+        "f1-score": 0.93,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 0.94,
+        "recall": 0.93,
+        "f1-score": 0.93,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1313,
+        187
+      ],
+      [
+        23,
+        1477
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_102520_post_voltages_only/training_curves.png"
+  },
+  {
+    "run_codename": "0508_102334_pre_voltages_only",
+    "features_used": [
+      "VA",
+      "VB",
+      "VC"
+    ],
+    "last_train_acc": 0.7179,
+    "last_train_loss": 0.485,
+    "last_val_acc": 0.72,
+    "last_val_loss": 0.4556,
+    "test_results": {
+      "Healthy": {
+        "precision": 0.64,
+        "recall": 0.96,
+        "f1-score": 0.76,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 0.92,
+        "recall": 0.45,
+        "f1-score": 0.6,
+        "support": 1500
+      },
+      "accuracy": 0.7,
+      "macro_avg": {
+        "precision": 0.78,
+        "recall": 0.7,
+        "f1-score": 0.68,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 0.78,
+        "recall": 0.7,
+        "f1-score": 0.68,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1440,
+        60
+      ],
+      [
+        827,
+        673
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_102334_pre_voltages_only/training_curves.png"
+  },
+  {
+    "run_codename": "0508_102149_post_currents_only",
+    "features_used": [
+      "Ia",
+      "Ib",
+      "Ic"
+    ],
+    "last_train_acc": 0.5319,
+    "last_train_loss": 0.6823,
+    "last_val_acc": 0.533,
+    "last_val_loss": 0.6765,
+    "test_results": {
+      "Healthy": {
+        "precision": 0.64,
+        "recall": 0.21,
+        "f1-score": 0.31,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 0.53,
+        "recall": 0.89,
+        "f1-score": 0.66,
+        "support": 1500
+      },
+      "accuracy": 0.55,
+      "macro_avg": {
+        "precision": 0.59,
+        "recall": 0.55,
+        "f1-score": 0.49,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 0.59,
+        "recall": 0.55,
+        "f1-score": 0.49,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        310,
+        1190
+      ],
+      [
+        172,
+        1328
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_102149_post_currents_only/training_curves.png"
+  },
+  {
+    "run_codename": "0508_102005_pre_currents_only",
+    "features_used": [
+      "IA",
+      "IB",
+      "IC"
+    ],
+    "last_train_acc": 0.7809,
+    "last_train_loss": 0.3811,
+    "last_val_acc": 0.8433,
+    "last_val_loss": 0.3387,
+    "test_results": {
+      "Healthy": {
+        "precision": 1.0,
+        "recall": 0.71,
+        "f1-score": 0.83,
+        "support": 1500
+      },
+      "Faulted": {
+        "precision": 0.77,
+        "recall": 1.0,
+        "f1-score": 0.87,
+        "support": 1500
+      },
+      "accuracy": 0.85,
+      "macro_avg": {
+        "precision": 0.89,
+        "recall": 0.85,
+        "f1-score": 0.85,
+        "support": 3000
+      },
+      "weighted_avg": {
+        "precision": 0.89,
+        "recall": 0.85,
+        "f1-score": 0.85,
+        "support": 3000
+      }
+    },
+    "confusion_matrix": [
+      [
+        1060,
+        440
+      ],
+      [
+        0,
+        1500
+      ]
+    ],
+    "training_curves_path": "./runs_round2/0508_102005_pre_currents_only/training_curves.png"
+  }
+]

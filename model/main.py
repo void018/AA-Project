@@ -95,6 +95,7 @@ def run_experiment(
     features_df,
     labels: np.ndarray,
     device: torch.device,
+    seed: int = 0,
 ) -> None:
     """Execute one full training run for a single experiment definition.
 
@@ -117,8 +118,17 @@ def run_experiment(
     name = experiment["name"]
     selected_features = experiment["features"]
 
+    # ── 0. Seed every RNG that affects this run ───────────────────────────────
+    # Without this, weight initialisation and batch shuffling differ silently
+    # between runs, so repeated runs of the same configuration are not
+    # comparable and their spread cannot be attributed.
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
     # ── 1. Create run directory ───────────────────────────────────────────────
-    codename = utils.generate_run_codename(name)
+    codename = f"{utils.generate_run_codename(name)}_s{seed}"
     run_dir = os.path.join(config.RUNS_DIR, codename)
     os.makedirs(run_dir, exist_ok=True)
 
@@ -127,7 +137,11 @@ def run_experiment(
     logger.info("=" * 60)
     logger.info("Experiment : %s", name)
     logger.info("Run codename: %s", codename)
+    logger.info("Seed: %d", seed)
     logger.info("Features (%d): %s", len(selected_features), selected_features)
+    logger.info("Log-transform: %s | dropout: %.2f | monitor: %s | best-ckpt: %s",
+                config.LOG_TRANSFORM, config.DROPOUT,
+                config.LR_MONITOR, config.USE_BEST_CHECKPOINT)
     logger.info("Device: %s", device)
     logger.info("=" * 60)
 
@@ -206,15 +220,19 @@ if __name__ == "__main__":
         len(labels), float(labels.mean()) * 100,
     )
 
-    # ── Run all experiments ───────────────────────────────────────────────────
-    _log.info("Found %d experiment(s) to run.", len(config.TRAINING_RUNS))
+    # ── Run all experiments, once per seed ────────────────────────────────────
+    n_exp = len(config.TRAINING_RUNS)
+    n_seeds = len(config.SEEDS)
+    _log.info("Found %d experiment(s) x %d seed(s) = %d run(s).",
+              n_exp, n_seeds, n_exp * n_seeds)
 
     for i, experiment in enumerate(config.TRAINING_RUNS, start=1):
-        if experiment.get("skip", True):...
-            #print("skipping", experiment["name"])
-            #continue
-        _log.info("\n[%d/%d] Starting experiment: %s", i,
-                  len(config.TRAINING_RUNS), experiment["name"])
-        run_experiment(experiment, features_df, labels, device)
+        if experiment.get("skip", False):
+            _log.info("Skipping experiment: %s", experiment["name"])
+            continue
+        for seed in config.SEEDS:
+            _log.info("\n[%d/%d] Starting experiment: %s (seed %d)",
+                      i, n_exp, experiment["name"], seed)
+            run_experiment(experiment, features_df, labels, device, seed=seed)
 
     _log.info("\nAll experiments complete.")

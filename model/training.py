@@ -9,6 +9,7 @@ every line is guaranteed to reach both the console and the run's log file.
 
 from __future__ import annotations
 
+import copy
 import logging
 import os
 from typing import Dict, Tuple
@@ -87,8 +88,13 @@ def train_model(
 ) -> Dict[str, list]:
     """Train *model* for the number of epochs defined in config.
 
-    Saves ``model_last.pt`` (final-epoch weights, not necessarily best) to
-    *run_dir*.  Early stopping triggers when validation accuracy stagnates for
+    Saves both ``model_last.pt`` (final-epoch weights) and ``model_best.pt``
+    (weights from the epoch with the best monitored validation metric). When
+    ``config.USE_BEST_CHECKPOINT`` is set, the best weights are loaded back
+    into *model* before returning, so the caller evaluates the best checkpoint
+    rather than whichever epoch training happened to stop on.
+
+    Early stopping triggers when the monitored metric fails to improve for
     ``config.EARLY_STOP_PATIENCE`` consecutive epochs.
 
     Parameters
@@ -103,7 +109,8 @@ def train_model(
     Returns
     -------
     history : dict with keys ``train_loss``, ``val_loss``,
-              ``train_acc``, ``val_acc`` — one float per epoch.
+              ``train_acc``, ``val_acc`` — one float per epoch — plus
+              ``best_epoch`` and ``best_val_acc``.
     """
     criterion = nn.BCEWithLogitsLoss()
     optimizer = torch.optim.Adam(
@@ -111,8 +118,15 @@ def train_model(
         lr=config.LEARNING_RATE,
         weight_decay=config.WEIGHT_DECAY,
     )
+
+    # Schedule on the SAME metric early stopping watches. Validation loss
+    # flattens long before validation accuracy stops oscillating, so a
+    # loss-driven scheduler never reduced the LR while accuracy was thrashing.
+    monitor = config.LR_MONITOR
+    mode = "max" if monitor == "val_acc" else "min"
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer,
+        mode=mode,
         patience=config.LR_PATIENCE,
         factor=config.LR_FACTOR,
     )
@@ -122,8 +136,13 @@ def train_model(
         "train_acc":  [], "val_acc":  [],
     }
 
-    best_val_acc = 0.0
+    best_metric = -float("inf") if mode == "max" else float("inf")
+    best_epoch = 0
+    best_state = copy.deepcopy(model.state_dict())
     patience_count = 0
+
+    def _improved(current: float) -> bool:
+        return current > best_metric if mode == "max" else current < best_metric
 
     for epoch in range(1, config.EPOCHS + 1):
         tr_loss, tr_acc = run_epoch(
@@ -132,33 +151,60 @@ def train_model(
         vl_loss, vl_acc = run_epoch(
             model, val_loader, criterion, optimizer, device, training=False
         )
-        scheduler.step(vl_loss)
+
+        current = vl_acc if monitor == "val_acc" else vl_loss
+        scheduler.step(current)
 
         history["train_loss"].append(tr_loss)
         history["val_loss"].append(vl_loss)
         history["train_acc"].append(tr_acc)
         history["val_acc"].append(vl_acc)
 
-        if vl_acc > best_val_acc:
-            best_val_acc = vl_acc
+        if _improved(current):
+            best_metric = current
+            best_epoch = epoch
+            best_state = copy.deepcopy(model.state_dict())
             patience_count = 0
         else:
             patience_count += 1
 
         if epoch % 20 == 0:
             logger.info(
-                "Epoch %3d | Train acc %.4f  loss %.4f | Val acc %.4f  loss %.4f",
+                "Epoch %3d | Train acc %.4f  loss %.4f | Val acc %.4f  loss %.4f | lr %.2e",
                 epoch, tr_acc, tr_loss, vl_acc, vl_loss,
+                optimizer.param_groups[0]["lr"],
             )
 
         if patience_count >= config.EARLY_STOP_PATIENCE:
-            logger.info("Early stopping triggered at epoch %d.", epoch)
+            logger.info(
+                "Early stopping at epoch %d (no %s improvement for %d epochs).",
+                epoch, monitor, config.EARLY_STOP_PATIENCE,
+            )
             break
 
-    # ── Save final-epoch weights ──────────────────────────────────────────────
-    model_path = os.path.join(run_dir, "model_last.pt")
-    torch.save(model.state_dict(), model_path)
-    logger.info("Saved final model weights → %s", model_path)
+    # ── Report the spread, which the final-epoch number alone hides ───────────
+    tail = history["val_acc"][-50:]
+    logger.info(
+        "Val accuracy — final epoch %.4f | best %.4f (epoch %d) | "
+        "last-50 mean %.4f  min %.4f  max %.4f",
+        history["val_acc"][-1], best_metric if mode == "max" else max(history["val_acc"]),
+        best_epoch, float(np.mean(tail)), float(np.min(tail)), float(np.max(tail)),
+    )
+
+    # ── Persist both checkpoints ──────────────────────────────────────────────
+    last_path = os.path.join(run_dir, "model_last.pt")
+    best_path = os.path.join(run_dir, "model_best.pt")
+    torch.save(model.state_dict(), last_path)
+    torch.save(best_state, best_path)
+    logger.info("Saved final weights → %s", last_path)
+    logger.info("Saved best  weights → %s (epoch %d)", best_path, best_epoch)
+
+    if config.USE_BEST_CHECKPOINT:
+        model.load_state_dict(best_state)
+        logger.info("Restored best checkpoint for test evaluation.")
+
+    history["best_epoch"] = best_epoch
+    history["best_val_acc"] = max(history["val_acc"])
 
     return history
 

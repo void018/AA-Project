@@ -1,0 +1,54 @@
+10:37:35  INFO      ============================================================
+10:37:35  INFO      Experiment : all_currents_all_voltages
+10:37:35  INFO      Run codename: 0508_103735_all_currents_all_voltages
+10:37:35  INFO      Features (12): ['IA', 'IB', 'IC', 'Ia', 'Ib', 'Ic', 'VA', 'VB', 'VC', 'Va', 'Vb', 'Vc']
+10:37:35  INFO      Device: cuda
+10:37:35  INFO      ============================================================
+10:37:35  INFO      Preparing data …
+10:37:35  INFO      Split sizes — train: 14000 | val: 3000 | test: 3000
+10:37:35  INFO      Class balance — faulted: 50.00%
+10:37:35  INFO      Initialising FaultDetector (input_dim=12) …
+10:37:35  INFO      Training for up to 400 epochs …
+10:37:40  INFO      Epoch  20 | Train acc 0.7870  loss 0.3809 | Val acc 0.7420  loss 0.3422
+10:37:45  INFO      Epoch  40 | Train acc 0.7795  loss 0.3771 | Val acc 0.7337  loss 0.3562
+10:37:50  INFO      Epoch  60 | Train acc 0.7897  loss 0.3776 | Val acc 1.0000  loss 0.3358
+10:37:55  INFO      Epoch  80 | Train acc 0.7878  loss 0.3745 | Val acc 0.8290  loss 0.3361
+10:38:01  INFO      Epoch 100 | Train acc 0.7949  loss 0.3685 | Val acc 1.0000  loss 0.3216
+10:38:06  INFO      Epoch 120 | Train acc 0.7933  loss 0.3702 | Val acc 1.0000  loss 0.3419
+10:38:11  INFO      Epoch 140 | Train acc 0.7913  loss 0.3748 | Val acc 0.7637  loss 0.3312
+10:38:16  INFO      Epoch 160 | Train acc 0.7904  loss 0.3722 | Val acc 0.9183  loss 0.3423
+10:38:21  INFO      Epoch 180 | Train acc 0.7975  loss 0.3638 | Val acc 1.0000  loss 0.3454
+10:38:26  INFO      Epoch 200 | Train acc 0.8016  loss 0.3621 | Val acc 0.7603  loss 0.3425
+10:38:31  INFO      Epoch 220 | Train acc 0.7973  loss 0.3661 | Val acc 0.8383  loss 0.3405
+10:38:36  INFO      Epoch 240 | Train acc 0.7921  loss 0.3691 | Val acc 0.7970  loss 0.3349
+10:38:41  INFO      Epoch 260 | Train acc 0.7884  loss 0.3655 | Val acc 1.0000  loss 0.3473
+10:38:47  INFO      Epoch 280 | Train acc 0.7935  loss 0.3689 | Val acc 1.0000  loss 0.3280
+10:38:52  INFO      Epoch 300 | Train acc 0.7965  loss 0.3667 | Val acc 1.0000  loss 0.3331
+10:38:58  INFO      Epoch 320 | Train acc 0.7824  loss 0.3725 | Val acc 0.8993  loss 0.3400
+10:39:03  INFO      Epoch 340 | Train acc 0.7893  loss 0.3756 | Val acc 1.0000  loss 0.3285
+10:39:09  INFO      Epoch 360 | Train acc 0.7916  loss 0.3706 | Val acc 0.7543  loss 0.3501
+10:39:14  INFO      Epoch 380 | Train acc 0.7966  loss 0.3665 | Val acc 0.8587  loss 0.3322
+10:39:19  INFO      Epoch 400 | Train acc 0.7899  loss 0.3771 | Val acc 0.9090  loss 0.3350
+10:39:19  INFO      Saved final model weights → runs_round2/0508_103735_all_currents_all_voltages/model_last.pt
+10:39:19  INFO      
+10:39:19  INFO      ───────────────────────────────────────────────────────
+10:39:19  INFO      TEST SET RESULTS
+10:39:19  INFO      ───────────────────────────────────────────────────────
+10:39:19  INFO      
+              precision    recall  f1-score   support
+
+     Healthy       0.83      1.00      0.91      1500
+     Faulted       1.00      0.80      0.89      1500
+
+    accuracy                           0.90      3000
+   macro avg       0.92      0.90      0.90      3000
+weighted avg       0.92      0.90      0.90      3000
+
+10:39:19  INFO      Confusion Matrix:
+                 Pred Healthy  Pred Faulted
+  True Healthy       1500        0
+  True Faulted       303         1197
+10:39:19  INFO      ───────────────────────────────────────────────────────
+10:39:19  INFO      Training curves saved → runs_round2/0508_103735_all_currents_all_voltages/training_curves.png
+10:39:19  INFO      Total training time: 0:01:44.255851
+10:39:19  INFO      Artefacts saved in: runs_round2/0508_103735_all_currents_all_voltages

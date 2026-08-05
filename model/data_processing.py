@@ -131,13 +131,21 @@ def _voltage_asymmetry_features(
 # ─────────────────────────────────────────────────────────────────────────────
 
 def load_raw_data(filepath: str) -> pd.DataFrame:
-    """Load the CSV and apply mandatory rounding to voltages and currents.
+    """Load the CSV and apply rounding consistent with the MATLAB export.
 
-    Rounding rules (per specification):
-    - Post-transformer voltages (V_a, V_b, V_c)       → 1 decimal place.
-    - Post-transformer currents (I_a, I_b, I_c)        → nearest integer.
-    - Pre-transformer voltages  (V_A, V_B, V_C)        → 1 decimal place.
-    - Pre-transformer currents  (I_A, I_B, I_C)        → nearest integer.
+    ``main.m`` writes ``main_data.csv`` having already applied::
+
+        round(V)        -> voltages at integer precision
+        round(I, 1)     -> currents at one decimal place
+
+    Re-applying the *inverse* convention here (voltages to 1 dp, currents to
+    integer) silently re-quantised the currents and destroyed precision that
+    the simulation had deliberately retained. The rounding below mirrors
+    ``main.m`` and is therefore a no-op on a correctly exported file; it is
+    kept so the pipeline is robust to a CSV exported at higher precision.
+
+    Precision is controlled by ``config.ROUND_VOLTAGE_DECIMALS`` and
+    ``config.ROUND_CURRENT_DECIMALS``.
 
     Parameters
     ----------
@@ -154,21 +162,20 @@ def load_raw_data(filepath: str) -> pd.DataFrame:
     else:
         df = pd.read_csv(filepath).head(config.DATA_COUNT)
 
-    # Post-transformer voltages → 1 decimal place
-    for col in ("V_a", "V_b", "V_c"):
-        df[col] = df[col].round(1)
+    v_dec = config.ROUND_VOLTAGE_DECIMALS
+    i_dec = config.ROUND_CURRENT_DECIMALS
 
-    # Post-transformer currents → nearest integer
-    for col in ("I_a", "I_b", "I_c"):
-        df[col] = df[col].round(0).astype(np.int32)
+    # Voltages (both sides) → config.ROUND_VOLTAGE_DECIMALS
+    for col in ("V_a", "V_b", "V_c", "V_A", "V_B", "V_C"):
+        df[col] = df[col].round(v_dec)
+        if v_dec == 0:
+            df[col] = df[col].astype(np.int64)
 
-    # Pre-transformer voltages → 1 decimal place
-    for col in ("V_A", "V_B", "V_C"):
-        df[col] = df[col].round(1)
-
-    # Pre-transformer currents → nearest integer
-    for col in ("I_A", "I_B", "I_C"):
-        df[col] = df[col].round(0).astype(np.int32)
+    # Currents (both sides) → config.ROUND_CURRENT_DECIMALS
+    for col in ("I_a", "I_b", "I_c", "I_A", "I_B", "I_C"):
+        df[col] = df[col].round(i_dec)
+        if i_dec == 0:
+            df[col] = df[col].astype(np.int32)
 
     return df
 
@@ -305,7 +312,27 @@ def prepare_dataloaders(
             f"Valid names are: {list(features_df.columns)}"
         )
 
-    X_all = features_df[selected_features].values.astype(np.float32)
+    X_all = features_df[selected_features].values.astype(np.float64)
+
+    # ── Log-compress heavy-tailed magnitude features ──────────────────────────
+    # Applied before the split because log1p is stateless (no leakage), and
+    # before StandardScaler because the whole point is to fix the distribution
+    # the scaler sees. See the LOG_TRANSFORM note in config.py.
+    if config.LOG_TRANSFORM:
+        log_cols = [
+            i for i, f in enumerate(selected_features)
+            if f in config.LOG_TRANSFORM_FEATURES
+        ]
+        if log_cols:
+            block = X_all[:, log_cols]
+            if (block < 0).any():
+                raise ValueError(
+                    "LOG_TRANSFORM_FEATURES contains a column with negative "
+                    "values; log1p requires non-negative input."
+                )
+            X_all[:, log_cols] = np.log1p(block)
+
+    X_all = X_all.astype(np.float32)
 
     # ── Stratified 70 / 15 / 15 split ────────────────────────────────────────
     X_train, X_temp, y_train, y_temp = train_test_split(

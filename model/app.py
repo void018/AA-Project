@@ -14,7 +14,7 @@ st.set_page_config(
 
 
 @st.cache_data
-def load_data(file_path="runs_summary.json"):
+def load_data(file_path="./runs_summary_round2.json"):
     """
     Load the experiment summary JSON file into a Pandas DataFrame.
     The @st.cache_data decorator ensures the data is loaded only once.

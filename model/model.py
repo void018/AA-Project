@@ -6,6 +6,8 @@ All architecture changes should be made here.
 
 import torch.nn as nn
 
+import config
+
 
 class FaultDetector(nn.Module):
     """Binary classifier for electrical fault detection.
@@ -19,6 +21,11 @@ class FaultDetector(nn.Module):
     input_dim : int
         Number of input features (determined at runtime from the experiment
         feature list).
+    dropout : float, optional
+        Dropout probability. Defaults to ``config.DROPOUT``. Several
+        experiments use only 3-6 input features, where a high dropout rate
+        removes an entire feature from a large share of forward passes and
+        destabilises training.
 
     Examples
     --------
@@ -26,19 +33,20 @@ class FaultDetector(nn.Module):
     >>> logits = model(x_batch)   # shape: (batch_size,)
     """
 
-    def __init__(self, input_dim: int) -> None:
+    def __init__(self, input_dim: int, dropout: float | None = None) -> None:
         super().__init__()
+        p = config.DROPOUT if dropout is None else dropout
         self.net = nn.Sequential(
             nn.Linear(input_dim, 64),
             nn.BatchNorm1d(64),
             nn.ReLU(),
-            nn.Dropout(0.3),
+            nn.Dropout(p),
 
             # Optional second hidden layer — uncomment to enable:
             # nn.Linear(64, 32),
             # nn.BatchNorm1d(32),
             # nn.ReLU(),
-            # nn.Dropout(0.2),
+            # nn.Dropout(p),
 
             nn.Linear(64, 1),  # raw logit; BCEWithLogitsLoss handles sigmoid
         )
